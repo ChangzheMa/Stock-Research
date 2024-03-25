@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pickle
 
 from rich.progress import Progress
 from tqdm import tqdm
@@ -77,3 +78,53 @@ def load_feature_and_label(base_path, label_column_name='ret_next_close_alpha_10
 
     return result
 
+
+from statsmodels.tsa.stattools import adfuller
+
+
+def check_stationarity(time_series, label=None):
+    """
+    使用ADF检验检查时间序列的平稳性。
+    如果序列非平稳，打印相关统计信息；如果平稳，则不输出。
+
+    参数:
+    - time_series: pd.Series, 时间序列数据
+
+    返回:
+    - None
+    """
+    adf_result = adfuller(time_series.dropna())
+
+    if adf_result[1] < 0.05:
+        pass
+    else:
+        print(f"{label}: 是非平稳的。")
+        print(f"ADF统计量: {adf_result[0]}")
+        print(f"p值: {adf_result[1]}")
+        print("临界值:")
+        for key, value in adf_result[4].items():
+            print(f"    {key}: {value}")
+
+
+def save_obj(obj, file_path):
+    """
+    - obj: 要保存的Python对象。
+    - file_path: 保存文件的路径。
+    """
+    dir_name = os.path.dirname(file_path)
+    if dir_name and not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+        print(f"创建目录: {dir_name}")
+
+    with open(file_path, 'wb') as file:
+        pickle.dump(obj, file)
+    print(f"对象已保存到 {file_path}")
+
+
+def load_obj(file_path):
+    """
+    - file_path: 字符串，指定要加载的文件的路径。
+    """
+    with open(file_path, 'rb') as file:
+        obj = pickle.load(file)
+    return obj
