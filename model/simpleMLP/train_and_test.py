@@ -34,8 +34,8 @@ optimizer = torch.optim.Adam(model.parameters())
 
 LOAD_FROM_CACHE = False
 # 当 LOAD_FROM_CACHE 为 False 时，以下有用
-stock_list = [code[2:8] for code in pd.read_csv('data/PreProcess-000300/stock_list.csv')['code'].to_list()]
-# stock_list = ['600519', '601318']
+# stock_list = [code[2:8] for code in pd.read_csv('data/PreProcess-000300/stock_list.csv')['code'].to_list()]
+stock_list = ['600519']
 
 # 以上为参数
 
