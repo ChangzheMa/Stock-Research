@@ -60,11 +60,7 @@ def load_feature_and_label(base_path, label_column_name='ret_next_close_alpha_10
             continue
 
         df = pd.read_csv(file_path)
-        df = df.drop(['Unnamed: 0', 'Unnamed: 0_1000_x', 'Unnamed: 0_1330_x', 'Unnamed: 0_1000_y', 'Unnamed: 0_1330_y'], axis=1)
         df = df.dropna(subset=[label_column_name])
-        df.loc[:, ~df.columns.isin([label_column_name, 'date'])] = (df.loc[:, ~df.columns.isin([label_column_name, 'date'])]
-                                                                    .apply(pd.to_numeric, errors='coerce'))
-        df.fillna(0, inplace=True)
         sub_df_list = split_df_by_dates(df, split_date)
 
         for idx in range(len(sub_df_list)):
