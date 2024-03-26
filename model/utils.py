@@ -59,7 +59,7 @@ def load_feature_and_label(base_path, label_column_name='ret_next_close_alpha_10
         if not os.path.exists(file_path):
             continue
 
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, index_col=0)
         df = df.dropna(subset=[label_column_name])
         sub_df_list = split_df_by_dates(df, split_date)
 

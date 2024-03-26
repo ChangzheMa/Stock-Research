@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from rich.progress import Progress
 from tqdm import tqdm
 
-from model.utils import load_feature_and_label
+from model.utils import load_feature_and_label, load_obj
 
 import os
 os.chdir('D:\\src\\Stock-Research')
@@ -29,9 +29,12 @@ else:
 
 # 设置参数
 
-LOAD_FROM_CACHE = True
+LOAD_FROM_CACHE = False
 # 当 LOAD_FROM_CACHE 为 False 时，以下有用
-stock_list = [code[2:8] for code in pd.read_csv('data/PreProcess-000300/stock_list.csv')['code'].to_list()]
+# jq_l1 = load_obj(f"data/IndustryData/jq_l1.pkl")
+stock_list = None
+# stock_list = [str(item)[:6] for item in jq_l1['HY002']]     # HY003是工业
+# stock_list = [code[2:8] for code in pd.read_csv('data/PreProcess-000300/stock_list.csv')['code'].to_list()]
 # stock_list = ['600519', '601318']
 
 # 以上为参数
