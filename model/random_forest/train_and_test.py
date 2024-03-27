@@ -32,9 +32,9 @@ else:
 LOAD_FROM_CACHE = False
 # 当 LOAD_FROM_CACHE 为 False 时，以下有用
 # jq_l1 = load_obj(f"data/IndustryData/jq_l1.pkl")
-stock_list = None
+# stock_list = None
 # stock_list = [str(item)[:6] for item in jq_l1['HY002']]     # HY003是工业
-# stock_list = [code[2:8] for code in pd.read_csv('data/PreProcess-000300/stock_list.csv')['code'].to_list()]
+stock_list = [code[2:8] for code in pd.read_csv('data/PreProcess-000300/stock_list.csv')['code'].to_list()]
 # stock_list = ['600519', '601318']
 
 # 以上为参数
