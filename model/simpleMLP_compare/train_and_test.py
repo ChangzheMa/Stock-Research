@@ -38,23 +38,25 @@ optimizer = torch.optim.Adam(model.parameters())
 print(model)
 model = model.to(device)
 
-df = pd.read_csv("data/PreProcess-000300-Merged/Merged/feature_and_label.csv")
+df = pd.read_csv("data/PreProcess-mostIndex-Merged/Merged/feature_and_label.csv")
 
 column_names = load_obj("data/PreProcess-000300-Merged/column_names.pkl")
 column_names = ["stock_code", "date"] + column_names + ["ret_next_close_alpha_1000"]
 df = df.filter(column_names)
 
 df['date'] = pd.to_datetime(df['date'])
-split_date = pd.Timestamp(2021, 12, 31, 23, 59, 59)
+split_date = pd.Timestamp(2021, 6, 30, 23, 59, 59)
 split_date2 = pd.Timestamp(2023, 12, 31, 23, 59, 59)
 
 train_df = df[df['date'] < split_date]
-train_loader = DataLoader(DfDataset(train_df), batch_size=1000, shuffle=True)
-
 test_df = df[(df['date'] >= split_date) & (df['date'] < split_date2)]
-test_loader = DataLoader(DfDataset(test_df), batch_size=1000, shuffle=True)
-
 valid_df = df[split_date2 <= df['date']]
+del df
+
+print(f"train len: {len(train_df)}, test len: {len(test_df)}, valid len: {len(valid_df)}")
+
+train_loader = DataLoader(DfDataset(train_df), batch_size=1000, shuffle=True)
+test_loader = DataLoader(DfDataset(test_df), batch_size=1000, shuffle=True)
 valid_loader = DataLoader(DfDataset(valid_df), batch_size=1000, shuffle=True)
 
 
