@@ -38,7 +38,10 @@ optimizer = torch.optim.Adam(model.parameters())
 print(model)
 model = model.to(device)
 
-df = pd.read_csv("data/PreProcess-mostIndex-Merged/Merged/feature_and_label.csv")
+FEATURE_CNT = 200
+EPOCH_CNT = 30
+
+df = pd.read_csv("data/PreProcess-mostIndex-Merged/Merged/feature_and_label.csv")[:FEATURE_CNT]
 
 column_names = load_obj("data/PreProcess-000300-Merged/column_names.pkl")
 column_names = ["stock_code", "date"] + column_names + ["ret_next_close_alpha_1000"]
@@ -55,13 +58,13 @@ del df
 
 print(f"train len: {len(train_df)}, test len: {len(test_df)}, valid len: {len(valid_df)}")
 
-train_loader = DataLoader(DfDataset(train_df), batch_size=1000, shuffle=True)
+train_loader = DataLoader(DfDataset(train_df), batch_size=128, shuffle=True)
 test_loader = DataLoader(DfDataset(test_df), batch_size=1000, shuffle=True)
 valid_loader = DataLoader(DfDataset(valid_df), batch_size=1000, shuffle=True)
 
 
-for epoch in tqdm(range(30)):
-    train_loader.dataset.prepare_data()
+for epoch in tqdm(range(EPOCH_CNT)):
+    train_loader.dataset.prepare_data(reuse=2)
     test_loader.dataset.prepare_data()
 
     model.train()
@@ -115,3 +118,5 @@ valid_loss = valid_loss / len(valid_loader.dataset)  # 计算平均损失
 valid_corr_rate = valid_correct_cnt / len(valid_loader.dataset)
 
 print(f'Valid Loss: {valid_loss:.4f}, Valid Correct Rate: {valid_corr_rate:.4f}')
+
+torch.save(model, f"model/simpleMLP_compare/model/feat{FEATURE_CNT}_epoch{EPOCH_CNT}_corr{valid_corr_rate:.4f}.pth")
