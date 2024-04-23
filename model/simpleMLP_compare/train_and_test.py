@@ -40,10 +40,11 @@ model = model.to(device)
 
 FEATURE_CNT = 200
 EPOCH_CNT = 30
+STOCK_LIST_TYPE = 'most_index_2000'
 
-df = pd.read_csv("data/PreProcess-mostIndex-Merged/Merged/feature_and_label.csv")[:FEATURE_CNT]
+df = pd.read_csv(f"data/PreProcess-mostIndex-Merged/Merged/feature_and_label_{STOCK_LIST_TYPE}.csv")
 
-column_names = load_obj("data/PreProcess-000300-Merged/column_names.pkl")
+column_names = load_obj("data/PreProcess-000300-Merged/column_names.pkl")[:FEATURE_CNT]
 column_names = ["stock_code", "date"] + column_names + ["ret_next_close_alpha_1000"]
 df = df.filter(column_names)
 
@@ -119,4 +120,4 @@ valid_corr_rate = valid_correct_cnt / len(valid_loader.dataset)
 
 print(f'Valid Loss: {valid_loss:.4f}, Valid Correct Rate: {valid_corr_rate:.4f}')
 
-torch.save(model, f"model/simpleMLP_compare/model/feat{FEATURE_CNT}_epoch{EPOCH_CNT}_corr{valid_corr_rate:.4f}.pth")
+torch.save(model, f"model/simpleMLP_compare/model/stock({STOCK_LIST_TYPE})_feat{FEATURE_CNT}_epoch{EPOCH_CNT}_corr{valid_corr_rate:.4f}.pth")

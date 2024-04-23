@@ -53,6 +53,17 @@ df = df[df['date'] > pd.Timestamp(2021, 6, 30, 23, 59, 59)]
 
 df['stock_code'] = df['stock_code'].astype(str).str.zfill(6)
 
+
+code_norm_map = {}
+
+
+def get_normalize_code(stock_code):
+    if stock_code not in code_norm_map:
+        code_norm_map[stock_code] = jq.normalize_code(stock_code)
+
+    return code_norm_map[stock_code]
+
+
 sub_pred_list = []
 
 grouped = df.groupby('date')
@@ -86,7 +97,7 @@ for _, group in tqdm(grouped):
 
     filtered_day_result = one_day_result[one_day_result['left_good'] > 0]
     counter = Counter(one_day_result['left'].tolist() + filtered_day_result['left'].tolist())
-    pre_val = 0.2
+    pre_val = 1
     code_list = []
     ret_next_close_alpha_list = []
     for (stock_code, cnt) in counter.most_common():
@@ -96,11 +107,13 @@ for _, group in tqdm(grouped):
     sub_pred = pd.DataFrame({
         'date': [date] * len(code_list),
         'time': [time] * len(code_list),
-        'code': [jq.normalize_code(code) for code in code_list],
+        'code': code_list,
         'ret_next_close_alpha': ret_next_close_alpha_list
     })
     sub_pred_list.append(sub_pred)
 
 
 pred_df = pd.concat(sub_pred_list)
-pred_df.to_csv("model/simpleMLP_compare/pred/feat200_epoch30_corr0.5910_submit_result.csv")
+pred_df['code'] = pred_df['code'].apply(get_normalize_code)
+pivot_df = pd.pivot_table(pred_df, values='ret_next_close_alpha', index=['date', 'time'], columns=['code'])
+pivot_df.to_csv("model/simpleMLP_compare/pred/feat200_epoch30_corr0.5910_submit_result.csv", float_format='%.5f')

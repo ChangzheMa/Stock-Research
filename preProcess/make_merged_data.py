@@ -14,13 +14,13 @@ os.chdir('D:\\src\\Stock-Research')
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-jq.auth(config['DEFAULT']['username'], config['DEFAULT']['password'])
-print(jq.get_query_count())
+# jq.auth(config['DEFAULT']['username'], config['DEFAULT']['password'])
+# print(jq.get_query_count())
 
 base_dir = f"data/PreProcess-000985"
 
 
-def make_merged_data(stock_list):
+def make_merged_data(stock_list, stock_type_name):
     folder_path = "data/PreProcess-mostIndex-Merged"
     stock_df_map = {}
     for stock_code in stock_list:
@@ -30,13 +30,14 @@ def make_merged_data(stock_list):
     combined_df = pd.concat(stock_df_map, names=['stock_code', 'date'])
     if not os.path.exists(f"{folder_path}/Merged"):
         os.mkdir(f"{folder_path}/Merged")
-    combined_df.to_csv(f"{folder_path}/Merged/feature_and_label.csv")
-    pd.DataFrame({'code': stock_list}).to_csv(f"{folder_path}/stock_list.csv")
+    combined_df.to_csv(f"{folder_path}/Merged/feature_and_label_{stock_type_name}.csv")
+    pd.DataFrame({'code': stock_list}).to_csv(f"{folder_path}/stock_list_{stock_type_name}.csv")
     return combined_df
 
 
 if __name__ == '__main__':
-    stock_list = load_obj("data/indexData/index_result.pkl")['most_index_4000']['stock_list']
+    stock_type_name = 'most_index_2000'
+    stock_list = load_obj("data/indexData/index_result.pkl")[stock_type_name]['stock_list']
     print(f"stock_list: {stock_list[:5]}")
     print(f"len(stock_list): {len(stock_list)}")
-    combined_df = make_merged_data(stock_list)
+    combined_df = make_merged_data(stock_list, stock_type_name)
