@@ -3,3 +3,4 @@
 config.ini
 /model/cache/
 /model/simpleMLP_compare/model/
+/model/simpleMLP_compare/pred/
